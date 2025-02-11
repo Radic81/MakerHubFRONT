@@ -20,6 +20,8 @@ export class LoginComponent {
       } else {
         this.router.navigate(['/calendar/medecin'], { queryParams: { user: this.username } });
       }
+    } else {
+      alert("Veuillez renseigner le nom d'utilisateur et le mot de passe.")
     }
   }
 }
