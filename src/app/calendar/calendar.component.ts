@@ -1,51 +1,64 @@
 import { Component, OnInit } from '@angular/core';
-// @fullcalendar plugins
+// Plugins FullCalendar
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import {EventService} from '../service/event.service';
+// Remplacez par votre service adapté aux rendez-vous
+import { RendezVousService } from '../service/rendezVous.service';
 
 @Component({
-  selector : 'app-calendar',
-  standalone : false,
+  selector: 'app-calendar',
+  standalone: false,
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
 
-  events: any[] = [];
+  // Liste des rendez-vous (provenant de la table "rendez_vous")
+  rendezVousList: any[] = [];
 
   today: string = '';
-
   calendarOptions: any = {
     initialView: 'dayGridMonth'
   };
 
   showDialog: boolean = false;
 
-  clickedEvent: any = null;
+  // Pour le dialogue d'affichage ou d'édition
+  clickedRendezVous: any = null;
+  view: string = ''; // 'display', 'new' ou 'edit'
+  changedRendezVous: any;
 
-  dateClicked: boolean = false;
-
-  edit: boolean = false;
-
+  // Propriétés pour la gestion des couleurs (tags)
   tags: any[] = [];
 
-  view: string = '';
+  // Pour la barre latérale
+  medecins: any[] = [];
+  selectedMedecin: any = null;
 
-  changedEvent: any;
-
-  constructor(private eventService: EventService) { }
+  constructor(private rendezVousService: RendezVousService) { }
 
   ngOnInit(): void {
+    // Date initiale du calendrier
     this.today = '2022-05-11';
 
-    this.eventService.getEvents().subscribe(events => {
-      this.events = events;
-      this.calendarOptions = { ...this.calendarOptions, ...{ events: events } };
-      this.tags = this.events.map(item => item.tag);
+    // Exemple de données statiques pour les médecins (à remplacer par un appel à votre API si nécessaire)
+    this.medecins = [
+      { id: 1, name: 'Dr. Dupont' },
+      { id: 2, name: 'Dr. Martin' },
+      { id: 3, name: 'Dr. Durand' }
+    ];
+
+    // Récupération des rendez-vous depuis le back via le service
+    this.rendezVousService.getRendezVous().subscribe(data => {
+      this.rendezVousList = data;
+      // On configure le calendrier avec la liste des rendez-vous
+      this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList };
+      // On peut récupérer les couleurs ou tags depuis chaque rendez-vous (selon votre mapping)
+      this.tags = this.rendezVousList.map(item => item.tag);
     });
 
+    // Configuration initiale de FullCalendar
     this.calendarOptions = {
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
       height: 720,
@@ -59,60 +72,91 @@ export class CalendarComponent implements OnInit {
       selectable: true,
       selectMirror: true,
       dayMaxEvents: true,
-      eventClick: (e: MouseEvent) => this.onEventClick(e),
-      select: (e: MouseEvent) => this.onDateSelect(e)
+      eventClick: (e: any) => this.onRendezVousClick(e),
+      select: (e: any) => this.onDateSelect(e)
     };
   }
 
-  onEventClick(e: any) {
-    this.clickedEvent = e.event;
-    let plainEvent = e.event.toPlainObject({ collapseExtendedProps: true, collapseColor: true });
+  // Appelée lors du clic sur un rendez-vous dans le calendrier
+  onRendezVousClick(e: any) {
+    this.clickedRendezVous = e.event;
+    let plainRendezVous = e.event.toPlainObject({ collapseExtendedProps: true, collapseColor: true });
     this.view = 'display';
     this.showDialog = true;
 
-    this.changedEvent = { ...plainEvent, ...this.clickedEvent };
-    this.changedEvent.start = this.clickedEvent.start;
-    this.changedEvent.end = this.clickedEvent.end ? this.clickedEvent.end : this.clickedEvent.start;
+    this.changedRendezVous = { ...plainRendezVous, ...this.clickedRendezVous };
+    this.changedRendezVous.start = this.clickedRendezVous.start;
+    this.changedRendezVous.end = this.clickedRendezVous.end ? this.clickedRendezVous.end : this.clickedRendezVous.start;
   }
 
+  // Appelée lors de la sélection d'une plage horaire pour créer un rendez-vous
   onDateSelect(e: any) {
-    this.view = 'new'
+    this.view = 'new';
     this.showDialog = true;
-    this.changedEvent = { ...e, title: null, description: null, location: null, backgroundColor: null, borderColor: null, textColor: null, tag: { color: null, name: null } };
+    this.changedRendezVous = {
+      ...e,
+      title: null,
+      description: null,
+      location: null,
+      backgroundColor: null,
+      borderColor: null,
+      textColor: null,
+      tag: { color: null, name: null }
+    };
   }
 
+  // Sauvegarde (création ou mise à jour) d'un rendez-vous
   handleSave() {
     if (!this.validate()) {
       return;
-    }
-    else {
+    } else {
       this.showDialog = false;
-      this.clickedEvent = { ...this.changedEvent, backgroundColor: this.changedEvent.tag.color, borderColor: this.changedEvent.tag.color, textColor: '#212121' };
+      this.clickedRendezVous = {
+        ...this.changedRendezVous,
+        backgroundColor: this.changedRendezVous.tag.color,
+        borderColor: this.changedRendezVous.tag.color,
+        textColor: '#212121'
+      };
 
-      if (this.clickedEvent.hasOwnProperty('id')) {
-        this.events = this.events.map(i => i.id.toString() === this.clickedEvent.id.toString() ? i = this.clickedEvent : i);
+      if (this.clickedRendezVous.hasOwnProperty('id')) {
+        // Modification d'un rendez-vous existant
+        this.rendezVousList = this.rendezVousList.map(i =>
+          i.id.toString() === this.clickedRendezVous.id.toString() ? this.clickedRendezVous : i
+        );
       } else {
-        this.events = [...this.events, { ...this.clickedEvent, id: Math.floor(Math.random() * 10000) }];
+        // Création d'un nouveau rendez-vous
+        this.rendezVousList = [
+          ...this.rendezVousList,
+          { ...this.clickedRendezVous, id: Math.floor(Math.random() * 10000) }
+        ];
       }
-      this.calendarOptions = { ...this.calendarOptions, ...{ events: this.events } };
-      this.clickedEvent = null;
+      // Mise à jour des rendez-vous dans FullCalendar
+      this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList };
+      this.clickedRendezVous = null;
     }
-
   }
 
   onEditClick() {
     this.view = 'edit';
   }
 
+  // Suppression d'un rendez-vous
   delete() {
-    this.events = this.events.filter(i => i.id.toString() !== this.clickedEvent.id.toString());
-    this.calendarOptions = { ...this.calendarOptions, ...{ events: this.events } };
+    this.rendezVousList = this.rendezVousList.filter(i => i.id.toString() !== this.clickedRendezVous.id.toString());
+    this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList };
     this.showDialog = false;
   }
 
   validate() {
-    let { start, end } = this.changedEvent;
+    let { start, end } = this.changedRendezVous;
     return start && end;
   }
 
+  // Méthode appelée lors de la sélection d'un médecin dans le menu déroulant
+  onMedecinChange(event: any) {
+    console.log("Médecin sélectionné :", this.selectedMedecin);
+    // Ici, vous pourrez filtrer la liste des rendez-vous en fonction du médecin sélectionné.
+    // Par exemple, si chaque rendez-vous possède une propriété "medecinId" mappée à "id_utilisateur" :
+    // this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList.filter(rv => rv.medecinId === this.selectedMedecin.id) };
+  }
 }

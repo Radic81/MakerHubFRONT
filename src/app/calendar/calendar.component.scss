@@ -1,36 +1,109 @@
+/* Mise en page globale : deux colonnes */
+.calendar-container {
+  display: flex;
+  height: 100vh; /* Occupe toute la hauteur de la fenêtre */
+}
 
-@media screen and (max-width: 768px) {
-  :host ::ng-deep {
-    .fc .fc-toolbar {
-      justify-content: center;
-    }
+/* Styles de la barre latérale avec des effets exagérés et modernes orientés autour du vert */
+.sidebar {
+  width: 280px; /* Légèrement élargi pour accentuer l'impact visuel */
+  padding: 2rem;
+  /* Dégradé orienté autour du vert allant du plus foncé au plus clair */
+  background: linear-gradient(135deg, #2e7d32, #66bb6a, #a5d6a7);
+  background-size: 400% 400%;
+  animation: gradientAnimation 4s ease infinite; /* Animation plus rapide pour un effet dynamique */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.3);
+  border-right: 2px solid rgba(255, 255, 255, 0.8);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
 
-    .fc-header-toolbar {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      justify-content: center;
-      text-align: center;
-      flex-wrap: wrap;
-
-      .fc-toolbar-chunk:nth-child(2) {
-        width: 100%;
-        order: 0;
-      }
-
-      .fc-toolbar-chunk:nth-child(1) {
-        order: 1;
-      }
-
-      .fc-toolbar-chunk:nth-child(3) {
-        order: 2;
-
-        .fc-button-group {
-          .fc-today-button {
-            margin-left: 2rem;
-          }
-        }
-      }
-    }
+/* Animation du dégradé pour la sidebar */
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
   }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Styles pour le groupe de boutons dans la barre latérale */
+.sidebar .menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar .menu button {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.2rem;
+  padding: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar .menu button:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);  /* Effet de grossissement exagéré */
+  border-color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre renforcée */
+}
+
+/* Styles pour le dropdown dans la barre latérale */
+.sidebar .dropdown {
+  width: 100%;
+}
+
+/* Personnalisation du p-dropdown de PrimeNG pour qu'il occupe 100% de la largeur du conteneur
+   et pour permettre l'affichage complet du libellé */
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+  box-sizing: border-box; /* Inclut bordure et padding dans la largeur */
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  min-height: 3.5rem; /* Augmente la hauteur pour accueillir le texte complet */
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+  color: #fff;
+  font-weight: 600;
+  white-space: normal;  /* Permet au texte de se répartir sur plusieurs lignes si nécessaire */
+  overflow: visible;    /* Désactive l'ellipse (troncature) */
+  text-overflow: clip;  /* Pas de troncature du texte */
+}
+
+:host ::ng-deep .p-dropdown:hover,
+:host ::ng-deep .p-dropdown:focus {
+  border-color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+/* Styles du contenu principal (calendrier) */
+.content {
+  flex: 1;
+  padding: 1rem;
+  overflow: auto;
+}
+
+/* Ajustements du conteneur du calendrier */
+.card {
+  margin: 0;
 }
