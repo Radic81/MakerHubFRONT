@@ -9,6 +9,7 @@ import { GestionMedecinsComponent } from './gestion-medecins/gestion-medecins.co
 import {Dialog} from 'primeng/dialog';
 import {ButtonDirective} from 'primeng/button';
 import {InputText} from 'primeng/inputtext';
+import {PrimeTemplate} from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import {InputText} from 'primeng/inputtext';
     AppRoutingModule,
     Dialog,
     ButtonDirective,
-    InputText
+    InputText,
+    PrimeTemplate
   ],
   providers: [],
   bootstrap: [AppComponent]
