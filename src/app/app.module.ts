@@ -5,16 +5,20 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
+import { GestionMedecinsComponent } from './gestion-medecins/gestion-medecins.component';
+import {Dialog} from 'primeng/dialog';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    GestionMedecinsComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    Dialog
   ],
   providers: [],
   bootstrap: [AppComponent]
