@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { GestionMedecinsComponent } from './gestion-medecins/gestion-medecins.component';
 import {Dialog} from 'primeng/dialog';
 import {ButtonDirective} from 'primeng/button';
+import {InputText} from 'primeng/inputtext';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {ButtonDirective} from 'primeng/button';
     FormsModule,
     AppRoutingModule,
     Dialog,
-    ButtonDirective
+    ButtonDirective,
+    InputText
   ],
   providers: [],
   bootstrap: [AppComponent]
