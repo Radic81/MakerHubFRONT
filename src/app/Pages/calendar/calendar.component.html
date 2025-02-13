@@ -1,23 +1,40 @@
 <div class="calendar-container">
   <!-- Barre latérale -->
   <div class="sidebar">
-    <div class="menu">
-      <!-- Bouton pour accéder à la page de gestion des médecins -->
-      <button pButton type="button" label="Gestion médecins" icon="pi pi-user" routerLink="/gestion-medecins"></button>
-      <!-- Bouton pour accéder à la page de gestion des patients -->
-      <button pButton type="button" label="Gestion patients" icon="pi pi-users" routerLink="/gestion-patients" class="mt-2"></button>
-    </div>
-    <div class="dropdown mt-4">
-      <!-- Menu déroulant pour sélectionner un médecin -->
-      <p-dropdown
-        [options]="medecins"
-        [(ngModel)]="selectedMedecin"
-        placeholder="Médecins"
-        optionLabel="name"
-        (onChange)="onMedecinChange($event)">
-      </p-dropdown>
-    </div>
+    <button
+      pButton
+      type="button"
+      label="Déconnexion"
+      icon="pi pi-sign-out"
+      (click)="disconnect()"
+      class="deconnexion-button">
+    </button>
+    @if (currentUser["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] == "0")
+    {
+      <div class="menu">
+        <!-- Bouton pour accéder à la page de gestion des médecins -->
+        <button pButton type="button" label="Gestion médecins" icon="pi pi-user" routerLink="/gestion-medecins"></button>
+        <!-- Bouton pour accéder à la page de gestion des patients -->
+        <button pButton type="button" label="Gestion patients" icon="pi pi-users" routerLink="/gestion-patients" class="mt-2"></button>
+      </div>
+      <div class="dropdown mt-4">
+        <!-- Menu déroulant pour sélectionner un médecin -->
+        <p-dropdown
+          [options]="medecins"
+          [(ngModel)]="selectedMedecin"
+          placeholder="Médecins"
+          optionLabel="name"
+          optionValue="id"
+          (onChange)="onMedecinChange($event)">
+        </p-dropdown>
+      </div>
+    }
+
   </div>
+
+
+
+
 
   <!-- Contenu du calendrier -->
   <div class="content">

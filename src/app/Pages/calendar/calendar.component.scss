@@ -107,3 +107,27 @@
 .card {
   margin: 0;
 }
+
+:host ::ng-deep .p-button.deconnexion-button {
+  width: 100%;
+  background: rgba(244, 67, 54, 0.2) !important; /* Fond rouge léger */
+  border: 2px solid rgba(244, 67, 54, 0.8) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  font-size: 1.2rem !important;
+  padding: 1.2rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  margin-bottom: 2rem !important;
+}
+
+:host ::ng-deep .p-button.deconnexion-button:hover {
+  background: rgba(244, 67, 54, 0.4) !important;
+  transform: scale(1.05) !important;
+  border-color: #fff !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+

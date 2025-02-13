@@ -1,8 +1,8 @@
-<div class="gestion-medecins-container">
+<div class="gestion-patients-container">
   <!-- En-tête de la page -->
   <div class="header">
     <button pButton type="button" icon="pi pi-arrow-left" label="Retour" (click)="onRetour()"></button>
-    <h2>Gestion Médecins</h2>
+    <h2>Gestion Patients</h2>
     <button pButton type="button" label="Créer" icon="pi pi-plus" class="create-button" (click)="onCreate()"></button>
   </div>
 
@@ -10,13 +10,13 @@
   <div class="search-bar">
     <span class="p-input-icon-left">
       <i class="pi pi-search"></i>
-      <input pInputText type="text" placeholder="Rechercher un médecin..." [(ngModel)]="searchTerm" (input)="onSearch()">
+      <input pInputText type="text" placeholder="Rechercher un patient..." [(ngModel)]="searchTerm" (input)="onSearch()">
     </span>
   </div>
 
-  <!-- Tableau listant les médecins -->
+  <!-- Tableau listant les patients -->
   <div class="table-container">
-    <table class="medecins-table">
+    <table class="patients-table">
       <thead>
       <tr>
         <th>#</th>
@@ -27,42 +27,46 @@
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let medecin of filteredMedecins; let i = index">
+      <tr *ngFor="let patient of filteredPatients; let i = index">
         <td>{{ i + 1 }}</td>
-        <td>{{ medecin.prenom }} {{ medecin.nom }}</td>
-        <td>{{ medecin.email }}</td>
-        <td>{{ medecin.telephone }}</td>
+        <td>{{ patient.prenom }} {{ patient.nom }}</td>
+        <td>{{ patient.email }}</td>
+        <td>{{ patient.telephone }}</td>
         <td>
-          <button pButton type="button" label="Voir" icon="pi pi-eye" class="voir-button" (click)="onView(medecin)"></button>
+          <button pButton type="button" label="Voir" icon="pi pi-eye" class="voir-button" (click)="onView(patient)"></button>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Popup pour afficher/éditer/créer un médecin -->
+  <!-- Popup pour afficher/éditer/créer un patient -->
   <p-dialog header="{{ dialogHeader }}" [(visible)]="displayDialog" [modal]="true" [closable]="true" [style]="{width: '40vw'}" (onHide)="onDialogHide()">
     <div class="dialog-content">
       <div class="field">
         <label for="prenom">Prénom</label>
-        <input id="prenom" pInputText type="text" [(ngModel)]="selectedMedecin.prenom">
+        <input id="prenom" pInputText type="text" [(ngModel)]="selectedPatient.prenom">
       </div>
       <div class="field">
         <label for="nom">Nom</label>
-        <input id="nom" pInputText type="text" [(ngModel)]="selectedMedecin.nom">
+        <input id="nom" pInputText type="text" [(ngModel)]="selectedPatient.nom">
       </div>
       <div class="field">
         <label for="email">Email</label>
-        <input id="email" pInputText type="email" [(ngModel)]="selectedMedecin.email">
+        <input id="email" pInputText type="email" [(ngModel)]="selectedPatient.email">
+      </div>
+      <div class="field">
+        <label for="mot_de_passe">Mot de passe</label>
+        <input id="mot_de_passe" pInputText type="password" [(ngModel)]="selectedPatient.mot_de_passe">
       </div>
       <div class="field">
         <label for="telephone">Téléphone</label>
-        <input id="telephone" pInputText type="text" [(ngModel)]="selectedMedecin.telephone">
+        <input id="telephone" pInputText type="text" [(ngModel)]="selectedPatient.telephone">
       </div>
     </div>
     <ng-template pTemplate="footer">
       <button pButton type="button" label="Annuler" class="p-button-text" (click)="onDialogHide()"></button>
-      <button pButton type="button" label="Enregistrer" icon="pi pi-check" (click)="onSaveMedecin()"></button>
+      <button pButton type="button" label="Enregistrer" icon="pi pi-check" (click)="onSavePatient()"></button>
     </ng-template>
   </p-dialog>
 </div>

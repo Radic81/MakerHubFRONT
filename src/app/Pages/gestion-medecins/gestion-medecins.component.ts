@@ -31,14 +31,14 @@ export class GestionMedecinsComponent implements OnInit {
       { id_utilisateur: 4, prenom: 'David', nom: 'Lefevre', email: 'david.lefevre@telenet.be', telephone: '0482901749' },
       { id_utilisateur: 5, prenom: 'Eva', nom: 'Leroy', email: 'eva.leroy@outsiplou.lesbains', telephone: '0472770741' },
       { id_utilisateur: 6, prenom: 'Fabien', nom: 'Lambert', email: 'fabien.lambert@net.core', telephone: '0484248116' },
-      // Vous pouvez ajouter d'autres exemples ou récupérer les données via un service
+      // Vous pouvez ajouter d'autres exemples ou récupérer les données via un services
     ];
     this.filteredMedecins = [...this.medecins];
   }
 
   // Retour à la page précédente
   onRetour() {
-    this.router.navigate(['/']); // Vous pouvez adapter cette navigation en fonction de votre routage
+    this.router.navigate(['/calendar/admin']);
   }
 
   // Filtrage des médecins selon le terme de recherche
@@ -63,10 +63,13 @@ export class GestionMedecinsComponent implements OnInit {
 
   // Ouverture de la popup en mode création (au clic sur "Créer")
   onCreate() {
-    this.selectedMedecin = { prenom: '', nom: '', email: '', telephone: '' };
+    console.log("onCreate déclenché");
+    this.selectedMedecin = { prenom: '', nom: '', email: '', mot_de_passe: '', telephone: '' };
     this.dialogHeader = 'Créer un nouveau médecin';
     this.displayDialog = true;
+    console.log("displayDialog =", this.displayDialog);
   }
+
 
   // Sauvegarde (création ou mise à jour) du médecin
   onSaveMedecin() {

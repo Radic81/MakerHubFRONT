@@ -119,49 +119,113 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Styles pour la popup (dialog) */
-/* Ces styles s'appliquent via ::ng-deep pour cibler les composants PrimeNG */
+/* Styles spécifiques à la popup (formulaire de création) */
 :host ::ng-deep .p-dialog {
-  border-radius: 8px;
+  border-radius: 10px;
+  overflow: hidden;
+  /* Pour s'assurer que la popup se distingue bien */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
 :host ::ng-deep .p-dialog .p-dialog-header {
-  background: linear-gradient(135deg, #2e7d32, #66bb6a);
+  background: linear-gradient(135deg, #1e5e20, #2e7d32);
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  padding: 1rem 1.5rem;
+  text-align: center;
 }
 
 :host ::ng-deep .p-dialog .p-dialog-content {
+  background: #f5f7fa;
   padding: 2rem;
 }
 
 :host ::ng-deep .p-dialog .p-dialog-footer {
-  background: #f9f9f9;
+  background: #f5f7fa;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  text-align: right;
+}
+
+/* Boutons dans le footer de la popup */
+:host ::ng-deep .p-dialog .p-dialog-footer button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* Bouton Annuler (avec la classe p-button-text) */
+:host ::ng-deep .p-dialog .p-dialog-footer button.p-button-text {
+  background-color: #fff;
+  color: #2e7d32;
+  border: 2px solid #2e7d32;
+}
+:host ::ng-deep .p-dialog .p-dialog-footer button.p-button-text:hover {
+  background-color: #2e7d32;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Bouton Enregistrer */
+:host ::ng-deep .p-dialog .p-dialog-footer button:not(.p-button-text) {
+  background-color: #2e7d32;
+  color: #fff;
+  border: 2px solid #2e7d32;
+}
+:host ::ng-deep .p-dialog .p-dialog-footer button:not(.p-button-text):hover {
+  background-color: #1e5e20;
+  border-color: #1e5e20;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Champs du formulaire dans la popup */
+:host ::ng-deep .p-dialog .p-dialog-content .field input {
+  width: 100%;
   padding: 1rem;
-  border-top: 1px solid #ddd;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+:host ::ng-deep .p-dialog .p-dialog-content .field input:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 10px rgba(102, 187, 106, 0.5);
 }
 
 /* Champs du formulaire dans la popup */
 .field {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .field label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
 }
 
 .field input {
   width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #ddd;
-  border-radius: 4px;
+  padding: 0.8rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
 }
 
 .field input:focus {
   border-color: #66bb6a;
+}
+
+
+p-dialog {
+  background-color: #66bb6a;
 }

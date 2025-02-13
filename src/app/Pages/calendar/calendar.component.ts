@@ -3,8 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
-// Remplacez par votre service adapté aux rendez-vous
-import { RendezVousService } from '../service/rendezVous.service';
+// Remplacez par votre services adapté aux rendez-vous
+import { RendezVousService } from '../../services/rendezVous.service';
+import {AuthService} from '../../services/auth.service';
+import {User} from '../../models/user.model';
+import {JwtPayload} from '../../models/jwtPayload.model';
 
 @Component({
   selector: 'app-calendar',
@@ -13,6 +16,7 @@ import { RendezVousService } from '../service/rendezVous.service';
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
+  currentUser!: JwtPayload
 
   // Liste des rendez-vous (provenant de la table "rendez_vous")
   rendezVousList: any[] = [];
@@ -36,7 +40,10 @@ export class CalendarComponent implements OnInit {
   medecins: any[] = [];
   selectedMedecin: any = null;
 
-  constructor(private rendezVousService: RendezVousService) { }
+  constructor(
+    private rendezVousService: RendezVousService,
+    private readonly _auth: AuthService
+  ) { }
 
   ngOnInit(): void {
     // Date initiale du calendrier
@@ -44,12 +51,12 @@ export class CalendarComponent implements OnInit {
 
     // Exemple de données statiques pour les médecins (à remplacer par un appel à votre API si nécessaire)
     this.medecins = [
-      { id: 1, name: 'Dr. Dupont' },
-      { id: 2, name: 'Dr. Martin' },
-      { id: 3, name: 'Dr. Durand' }
+      { id: "1", name: 'Dr. Dupont' },
+      { id: "2", name: 'Dr. Martin' },
+      { id: "0", name: 'Dr. Dero' }
     ];
 
-    // Récupération des rendez-vous depuis le back via le service
+    // Récupération des rendez-vous depuis le back via le services
     this.rendezVousService.getRendezVous().subscribe(data => {
       this.rendezVousList = data;
       // On configure le calendrier avec la liste des rendez-vous
@@ -75,6 +82,8 @@ export class CalendarComponent implements OnInit {
       eventClick: (e: any) => this.onRendezVousClick(e),
       select: (e: any) => this.onDateSelect(e)
     };
+
+    this.currentUser = this._auth.getTokenData()!
   }
 
   // Appelée lors du clic sur un rendez-vous dans le calendrier
@@ -158,5 +167,9 @@ export class CalendarComponent implements OnInit {
     // Ici, vous pourrez filtrer la liste des rendez-vous en fonction du médecin sélectionné.
     // Par exemple, si chaque rendez-vous possède une propriété "medecinId" mappée à "id_utilisateur" :
     // this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList.filter(rv => rv.medecinId === this.selectedMedecin.id) };
+  }
+
+  disconnect():void {
+    this._auth.logout();
   }
 }

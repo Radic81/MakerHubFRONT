@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'  // Cela permet d'utiliser le service partout dans l'application sans l'ajouter dans les providers manuellement
+  providedIn: 'root'  // Cela permet d'utiliser le services partout dans l'application sans l'ajouter dans les providers manuellement
 })
 export class RendezVousService {
 

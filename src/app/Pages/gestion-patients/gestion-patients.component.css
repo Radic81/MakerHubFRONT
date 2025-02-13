@@ -1,0 +1,227 @@
+/* Conteneur principal de la page Gestion Patients */
+.gestion-patients-container {
+  padding: 2rem;
+  background: #f0f2f5;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* En-tête de la page */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #2e7d32, #66bb6a, #a5d6a7);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.header h2 {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  font-size: 1.8rem;
+}
+
+.header button {
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Bouton Créer spécifique */
+.create-button {
+  background-color: #fff;
+  color: #2e7d32;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+}
+
+/* Barre de recherche */
+.search-bar {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.search-bar .p-input-icon-left {
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-bar input {
+  border: 2px solid #2e7d32;
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+/* Tableau listant les patients */
+.table-container {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.patients-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.patients-table th,
+.patients-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.patients-table th {
+  background: linear-gradient(135deg, #2e7d32, #66bb6a);
+  color: #fff;
+}
+
+.patients-table tr:hover {
+  background: #f1f1f1;
+}
+
+/* Bouton Voir dans la table */
+.voir-button {
+  min-width: 80px;
+  background-color: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.voir-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles spécifiques à la popup (formulaire de création) */
+:host ::ng-deep .p-dialog {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-header {
+  background: linear-gradient(135deg, #1e5e20, #2e7d32);
+  color: #fff;
+  font-size: 1.3rem;
+  padding: 1rem 1.5rem;
+  text-align: center;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  background: #f5f7fa;
+  padding: 2rem;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-footer {
+  background: #f5f7fa;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  text-align: right;
+}
+
+/* Boutons dans le footer de la popup */
+:host ::ng-deep .p-dialog .p-dialog-footer button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.8rem 1.6rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* Bouton Annuler */
+:host ::ng-deep .p-dialog .p-dialog-footer button.p-button-text {
+  background-color: #fff;
+  color: #2e7d32;
+  border: 2px solid #2e7d32;
+}
+:host ::ng-deep .p-dialog .p-dialog-footer button.p-button-text:hover {
+  background-color: #2e7d32;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Bouton Enregistrer */
+:host ::ng-deep .p-dialog .p-dialog-footer button:not(.p-button-text) {
+  background-color: #2e7d32;
+  color: #fff;
+  border: 2px solid #2e7d32;
+}
+:host ::ng-deep .p-dialog .p-dialog-footer button:not(.p-button-text):hover {
+  background-color: #1e5e20;
+  border-color: #1e5e20;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Champs du formulaire dans la popup */
+:host ::ng-deep .p-dialog .p-dialog-content .field input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+:host ::ng-deep .p-dialog .p-dialog-content .field input:focus {
+  border-color: #66bb6a;
+  box-shadow: 0 0 10px rgba(102, 187, 106, 0.5);
+}
+
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.field input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.field input:focus {
+  border-color: #66bb6a;
+}
+
+p-dialog {
+  background-color: #66bb6a;
+}
