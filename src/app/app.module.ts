@@ -18,6 +18,11 @@ import {DropdownModule} from 'primeng/dropdown';
 import {FullCalendarModule} from '@fullcalendar/angular';
 import {Calendar} from 'primeng/calendar';
 import { GestionPatientsComponent } from './pages/gestion-patients/gestion-patients.component';
+import {Select} from 'primeng/select';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import {providePrimeNG} from 'primeng/config';
+import Aura from '@primeng/themes/aura';
+
 
 
 @NgModule({
@@ -36,15 +41,22 @@ import { GestionPatientsComponent } from './pages/gestion-patients/gestion-patie
     ButtonModule,
     InputTextModule,
     DropdownModule,
+    Select,
     FullCalendarModule,
     Calendar,
     ReactiveFormsModule
   ],
   providers: [
     provideAnimations(),
+    provideAnimationsAsync(),
     provideHttpClient(
       withInterceptors([])
-    )
+    ),
+    providePrimeNG({
+      theme: {
+        preset: Aura
+      }
+    })
   ],
   bootstrap: [AppComponent]
 })
