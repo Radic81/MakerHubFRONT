@@ -68,12 +68,13 @@
   width: 100%;
 }
 
-/* Personnalisation du p-dropdown de PrimeNG pour qu'il occupe 100% de la largeur du conteneur
-   et pour permettre l'affichage complet du libellé */
+
+
+/* Personnalisation du p-dropdown  */
 :host ::ng-deep .p-dropdown {
   width: 100%;
   box-sizing: border-box; /* Inclut bordure et padding dans la largeur */
-  background-color: transparent;
+  //background-color: transparent;
   color: #fff;
   border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 12px;
@@ -86,9 +87,9 @@
 :host ::ng-deep .p-dropdown .p-dropdown-label {
   color: #fff;
   font-weight: 600;
-  white-space: normal;  /* Permet au texte de se répartir sur plusieurs lignes si nécessaire */
-  overflow: visible;    /* Désactive l'ellipse (troncature) */
-  text-overflow: clip;  /* Pas de troncature du texte */
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 :host ::ng-deep .p-dropdown:hover,

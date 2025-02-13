@@ -19,17 +19,18 @@
       </div>
       <div class="dropdown mt-4">
         <!-- Menu déroulant pour sélectionner un médecin -->
-        <p-dropdown
+        <p-select
           [options]="medecins"
           [(ngModel)]="selectedMedecin"
           placeholder="Médecins"
           optionLabel="name"
           optionValue="id"
-          (onChange)="onMedecinChange($event)">
-        </p-dropdown>
+          (onChange)="onMedecinChange($event)"
+          styleClass="custom-dropdown"
+          panelStyleClass="custom-dropdown-panel">
+        </p-select>
       </div>
     }
-
   </div>
 
 
