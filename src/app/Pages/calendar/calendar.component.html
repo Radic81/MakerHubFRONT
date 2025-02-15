@@ -38,106 +38,123 @@
     <div class="card">
       <full-calendar [options]="calendarOptions"></full-calendar>
 
-      <p-dialog #dd [(visible)]="showDialog" [breakpoints]="{'960px': '75vw', '640px': '90vw'}" [style]="{width: '36rem'}" [modal]="true" [closable]="true" (onHide)="view = ''">
-        <!-- En-tête du dialogue -->
+      <p-dialog
+        #dd
+        [(visible)]="showDialog"
+        [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+        [style]="{width: '36rem'}"
+        [modal]="true"
+        [closable]="true"
+        (onHide)="view = ''">
+
+        <!-- En-tête -->
         <ng-template pTemplate="header">
-          <span class="text-900 font-semibold text-xl">
-            {{ view === 'display' ? changedRendezVous.title : (view === 'new' ? 'Nouveau rendez-vous' : 'Modifier le rendez-vous') }}
-          </span>
+          <div class="dialog-header">
+            <h3>
+              {{
+                view === 'display'
+                  ? changedRendezVous.patientName
+                  : view === 'new'
+                    ? 'Nouveau rendez-vous'
+                    : 'Modifier le rendez-vous'
+              }}
+            </h3>
+          </div>
         </ng-template>
-        <!-- Contenu du dialogue -->
+
+        <!-- Contenu -->
         <ng-template pTemplate="content">
-          <div *ngIf="view === 'display'">
-            <span class="text-900 font-semibold block mb-2">Description</span>
-            <span class="block mb-3">{{changedRendezVous.description}}</span>
+          <div [ngSwitch]="view">
 
-            <div class="grid">
-              <div class="col-6">
-                <div class="text-900 font-semibold mb-2">Début</div>
-                <p class="flex align-items-center m-0">
-                  <i class="pi pi-fw pi-clock text-700 mr-2"></i>
-                  <span>{{changedRendezVous.start.toISOString().slice(0,10)}}</span>
-                </p>
-              </div>
-              <div class="col-6">
-                <div class="text-900 font-semibold mb-2">Fin</div>
-                <p class="flex align-items-center m-0">
-                  <i class="pi pi-fw pi-clock text-700 mr-2"></i>
-                  <span>{{changedRendezVous.end.toISOString().slice(0,10)}}</span>
-                </p>
-              </div>
-              <div class="col-12">
-                <div class="text-900 font-semibold mb-2">Localisation</div>
-                <p class="flex align-items-center m-0">
-                  <i class="pi pi-fw pi-map-marker text-700 mr-2"></i>
-                  <span>{{changedRendezVous.location}}</span>
-                </p>
-              </div>
-              <div class="col-12">
-                <div class="text-900 font-semibold mb-2">Couleur</div>
-                <p class="flex align-items-center m-0">
-                  <span class="inline-flex flex-shrink-0 w-1rem h-1rem mr-2 border-circle" [style.backgroundColor]="changedRendezVous.tag.color"></span>
-                  <span>{{changedRendezVous.tag.name}}</span>
-                </p>
+            <!-- Vue affichage (lecture seule) -->
+            <div *ngSwitchCase="'display'" class="display-form">
+              <p class="description">{{ changedRendezVous.description }}</p>
+              <div class="info-grid">
+                <div class="info-item">
+                  <i class="pi pi-clock"></i>
+                  <span>{{ changedRendezVous.start | date: 'shortDate' }}</span>
+                </div>
+                <div class="info-item">
+                  <i class="pi pi-clock"></i>
+                  <span>{{ changedRendezVous.end | date: 'shortDate' }}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div *ngIf="view !== 'display'">
-            <div class="grid p-fluid formgrid">
-              <div class="col-12 md:col-6 field">
-                <label for="title" class="text-900 font-semibold">Titre</label>
+
+            <!-- Vue édition/création -->
+            <div *ngSwitchDefault class="edit-form">
+              <div class="form-group">
+                <label for="patientName">Nom du patient</label>
                 <span class="p-input-icon-left">
-                  <i class="pi pi-pencil"></i>
-                  <input id="title" type="text" pInputText placeholder="Titre" [(ngModel)]="changedRendezVous.title" />
-                </span>
-              </div>
-              <div class="col-12 md:col-6 field">
-                <label for="location" class="text-900 font-semibold">Localisation</label>
-                <span class="p-input-icon-left">
-                  <i class="pi pi-map-marker"></i>
-                  <input id="location" type="text" pInputText placeholder="Localisation" [(ngModel)]="changedRendezVous.location" />
-                </span>
-              </div>
-              <div class="col-12 field">
-                <label for="description" class="text-900 font-semibold">Description du rendez-vous</label>
-                <textarea id="description" type="text" pTextarea [rows]="5" [(ngModel)]="changedRendezVous.description" style="resize: none"></textarea>
+            <i class="pi pi-user"></i>
+            <input
+              id="patientName"
+              type="text"
+              pInputText
+              placeholder="Nom du patient"
+              [(ngModel)]="changedRendezVous.patientName" />
+          </span>
               </div>
 
-              <div class="col-12 md:col-6 field">
-                <label for="start" class="text-900 font-semibold">Date & Heure début</label>
-                <p-calendar [appendTo]="dd" dateFormat="mm-dd-yy" [maxDate]="changedRendezVous.end" [showTime]="true" [required]="true" inputId="start" [(ngModel)]="changedRendezVous.start"></p-calendar>
+              <div class="form-group">
+                <label for="description">Description</label>
+                <textarea
+                  id="description"
+                  pInputTextarea
+                  rows="4"
+                  placeholder="Détails du rendez-vous"
+                  [(ngModel)]="changedRendezVous.description"></textarea>
               </div>
-              <div class="col-12 md:col-6 field">
-                <label for="end" class="text-900 font-semibold">Date & Heure fin</label>
-                <p-calendar [appendTo]="dd" dateFormat="mm-dd-yy" [minDate]="changedRendezVous.start" [showTime]="true" [required]="true" inputId="end" [(ngModel)]="changedRendezVous.end"></p-calendar>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="start">Début</label>
+                  <p-calendar
+                    id="start"
+                    [appendTo]="dd"
+                    dateFormat="dd/mm/yy"
+                    [showTime]="true"
+                    inputId="start"
+                    [(ngModel)]="changedRendezVous.start"></p-calendar>
+                </div>
+                <div class="form-group">
+                  <label for="end">Fin</label>
+                  <p-calendar
+                    id="end"
+                    [appendTo]="dd"
+                    dateFormat="dd/mm/yy"
+                    [showTime]="true"
+                    inputId="end"
+                    [(ngModel)]="changedRendezVous.end"></p-calendar>
+                </div>
               </div>
-              <div class="col-12 field">
-                <label for="company-color" class="text-900 font-semibold">Couleur</label>
-                <p-dropdown inputId="company-color" [appendTo]="dd" [options]="tags" [(ngModel)]="changedRendezVous.tag" optionLabel="name">
-                  <ng-template pTemplate="selectedItem">
-                    <div *ngIf="changedRendezVous.tag" class="flex align-items-center">
-                      <div class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle" [style.backgroundColor]="changedRendezVous.tag.color"></div>
-                      <div>{{changedRendezVous.tag.name}}</div>
-                    </div>
-                  </ng-template>
-                  <ng-template let-tag pTemplate="item">
-                    <div class="flex align-items-center">
-                      <div class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle" [style.backgroundColor]="tag.color"></div>
-                      <div>{{tag.name}}</div>
-                    </div>
-                  </ng-template>
-                </p-dropdown>
-              </div>
+
             </div>
           </div>
         </ng-template>
 
-        <!-- Pied de page du dialogue -->
+        <!-- Pied de page -->
         <ng-template pTemplate="footer">
-          <button pButton *ngIf="view === 'display'" label="Modifier" icon="pi pi-pencil" (click)="onEditClick()"></button>
-          <button pButton *ngIf="view === 'new' || view === 'edit'" label="Enregistrer" icon="pi pi-check" (click)="handleSave()" [disabled]="!changedRendezVous.start || !changedRendezVous.end"></button>
+          <button
+            *ngIf="view === 'display'"
+            pButton
+            label="Modifier"
+            icon="pi pi-pencil"
+            (click)="onEditClick()"
+            class="footer-btn"></button>
+          <button
+            *ngIf="view === 'new' || view === 'edit'"
+            pButton
+            label="Enregistrer"
+            icon="pi pi-check"
+            (click)="handleSave()"
+            [disabled]="!changedRendezVous.start || !changedRendezVous.end || !changedRendezVous.patientName"
+            class="footer-btn"></button>
         </ng-template>
+
       </p-dialog>
+
+
     </div>
   </div>
 </div>

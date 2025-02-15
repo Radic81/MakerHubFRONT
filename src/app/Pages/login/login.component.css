@@ -104,7 +104,7 @@ input {
 }
 
 button {
-  background-color: #007bff;
+  background-color: darkcyan;
   color: white;
   padding: 10px;
   border: none;
@@ -114,10 +114,12 @@ button {
   max-width: 250px;
   font-size: 16px;
   transition: 0.3s;
+  font-family: Arial, sans-serif;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #016363;
+
 }
 
 a {

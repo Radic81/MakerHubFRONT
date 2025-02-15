@@ -1,3 +1,7 @@
+/* ---------------------------
+   Styles Globaux & Calendrier
+-----------------------------*/
+
 /* Mise en page globale : deux colonnes */
 .calendar-container {
   display: flex;
@@ -170,4 +174,97 @@
 }
 
 
+/* ---------------------------
+   Styles du Formulaire du Dialogue
+-----------------------------*/
 
+/* En-tête du dialogue */
+.dialog-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.dialog-header h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+/* Conteneur principal des formulaires */
+.edit-form,
+.display-form {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Groupes de champs */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+/* Inputs et textarea */
+input[pInputText],
+textarea[pInputTextarea] {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+input[pInputText]:focus,
+textarea[pInputTextarea]:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 6px rgba(46, 125, 50, 0.3);
+  outline: none;
+}
+
+/* Disposition en ligne pour les calendriers dans le formulaire */
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+.form-row .form-group {
+  flex: 1;
+}
+
+/* Styles pour le dropdown des couleurs */
+.tag-selected,
+.tag-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.tag-color {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Grille d'informations en mode affichage */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+/* Boutons du pied de page */
+.footer-btn {
+  margin-right: 0.5rem;
+}
