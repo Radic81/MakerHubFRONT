@@ -68,35 +68,73 @@
   width: 100%;
 }
 
-
-
-/* Personnalisation du p-dropdown  */
-:host ::ng-deep .p-dropdown {
+/* Dropdown fermé : reprise du style des boutons de la sidebar */
+:host ::ng-deep .custom-dropdown {
   width: 100%;
-  box-sizing: border-box; /* Inclut bordure et padding dans la largeur */
-  //background-color: transparent;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.2);
   color: #fff;
   border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 12px;
   padding: 1rem;
   font-size: 1.2rem;
   transition: all 0.3s ease;
-  min-height: 3.5rem; /* Augmente la hauteur pour accueillir le texte complet */
+  min-height: 3.5rem;
+  display: flex;
+  align-items: center;
 }
 
-:host ::ng-deep .p-dropdown .p-dropdown-label {
+:host ::ng-deep .custom-dropdown .p-dropdown-label {
   color: #fff;
   font-weight: 600;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-:host ::ng-deep .p-dropdown:hover,
-:host ::ng-deep .p-dropdown:focus {
+/* Effet de survol et focus similaire aux boutons */
+:host ::ng-deep .custom-dropdown:hover,
+:host ::ng-deep .custom-dropdown:focus {
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(1.05);
   border-color: #fff;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
+
+/* Panneau déroulant : fond et bordures inspirés des boutons */
+:host ::ng-deep .custom-dropdown-panel {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  padding: 0.5rem 0;
+}
+
+/* Style des items du dropdown */
+:host ::ng-deep .custom-dropdown-panel .p-dropdown-item {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  background: transparent;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Effet de survol sur les items et leurs descendants */
+:host ::ng-deep .custom-dropdown-panel .p-dropdown-item:hover,
+:host ::ng-deep .custom-dropdown-panel .p-dropdown-item:hover * {
+  background: rgba(255, 255, 255, 0.4);
+  color: #fff !important;
+  transform: scale(1.05);
+}
+
+/* Style de l'item sélectionné et de ses descendants */
+:host ::ng-deep .custom-dropdown-panel .p-dropdown-item.p-highlight,
+:host ::ng-deep .custom-dropdown-panel .p-dropdown-item.p-highlight * {
+  background: rgba(255, 255, 255, 0.4);
+  color: #fff !important;
+}
+
 /* Styles du contenu principal (calendrier) */
 .content {
   flex: 1;
@@ -111,8 +149,8 @@
 
 :host ::ng-deep .p-button.deconnexion-button {
   width: 100%;
-  background: rgba(244, 67, 54, 0.2) !important; /* Fond rouge léger */
-  border: 2px solid rgba(244, 67, 54, 0.8) !important;
+  background: rgba(46, 125, 50, 0.2) !important; /* Fond vert léger inspiré du #2e7d32 */
+  border: 2px solid rgba(46, 125, 50, 0.8) !important;
   border-radius: 12px !important;
   color: #fff !important;
   font-size: 1.2rem !important;
@@ -125,10 +163,11 @@
 }
 
 :host ::ng-deep .p-button.deconnexion-button:hover {
-  background: rgba(244, 67, 54, 0.4) !important;
+  background: rgba(46, 125, 50, 0.4) !important;
   transform: scale(1.05) !important;
   border-color: #fff !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
 }
+
 
 
