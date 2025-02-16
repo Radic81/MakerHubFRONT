@@ -23,8 +23,8 @@
           [options]="medecins"
           [(ngModel)]="selectedMedecin"
           placeholder="MEDECINS"
-          optionLabel="name"
-          optionValue="id"
+          optionLabel="nom"
+          [showClear]="true"
           (onChange)="onMedecinChange($event)"
           styleClass="custom-dropdown"
           panelStyleClass="custom-dropdown-panel">
@@ -36,7 +36,7 @@
   <!-- Contenu du calendrier -->
   <div class="content">
     <div class="card">
-      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+      <full-calendar #calendar [options]="calendarOptions" ></full-calendar>
 
       <p-dialog
         #dd
@@ -90,14 +90,14 @@
               <div class="form-group">
                 <label for="patientName">Nom du patient</label>
                 <span class="p-input-icon-left">
-              <i class="pi pi-user"></i>
-              <input
-                id="patientName"
-                type="text"
-                pInputText
-                placeholder="Nom du patient"
-                [(ngModel)]="changedRendezVous.patientName" />
-            </span>
+                  <i class="pi pi-user"></i>
+                  <input
+                    id="patientName"
+                    type="text"
+                    pInputText
+                    placeholder="Nom du patient"
+                    [(ngModel)]="changedRendezVous.patientName" />
+                </span>
               </div>
 
               <div class="form-group">
@@ -147,13 +147,13 @@
             (click)="onEditClick()"
             class="footer-btn"></button>
           <button
-            *ngIf="view === 'new' || view === 'edit'"
             pButton
             label="Enregistrer"
             icon="pi pi-check"
             (click)="handleSave()"
-            [disabled]="!changedRendezVous.start || !changedRendezVous.end || !changedRendezVous.patientName"
-            class="footer-btn"></button>
+            [disabled]="!changedRendezVous.start || !changedRendezVous.end || !changedRendezVous.patientName || !selectedMedecin"
+            class="footer-btn">
+          </button>
         </ng-template>
       </p-dialog>
     </div>

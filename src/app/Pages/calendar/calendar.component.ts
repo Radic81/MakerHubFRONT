@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { RendezVousService } from '../../services/rendezVous.service';
 import { AuthService } from '../../services/auth.service';
 import { JwtPayload } from '../../models/jwtPayload.model';
+import { UtilisateurService, Utilisateur } from '../../services/utilisateur.service';
 
 @Component({
   selector: 'app-calendar',
@@ -27,27 +28,26 @@ export class CalendarComponent implements OnInit {
   view: string = ''; // 'display', 'new' ou 'edit'
   changedRendezVous: any;
   tags: any[] = [];
-  medecins: any[] = [];
-  selectedMedecin: any = null;
+  medecins: Utilisateur[] = []; // Utiliser l'interface Utilisateur
+  selectedMedecin: Utilisateur | null = null;
 
   constructor(
     private rendezVousService: RendezVousService,
     private readonly _auth: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private utilisateurService: UtilisateurService // Injecter le service UtilisateurService
   ) { }
 
   ngOnInit(): void {
     this.today = new Date().toISOString().split('T')[0];
-    this.medecins = [
-      { id: "1", name: 'Dr. Dupont' },
-      { id: "2", name: 'Dr. Martin' },
-      { id: "0", name: 'Dr. Dero' }
-    ];
 
-    this.rendezVousService.getRendezVous().subscribe(data => {
-      this.rendezVousList = data;
-      this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList };
-      this.tags = this.rendezVousList.map(item => item.tag);
+    // Récupérer les médecins depuis la base de données
+    this.utilisateurService.getAll().subscribe(data => {
+      this.medecins = data.filter(u => u.role === 1); // Filtrer les utilisateurs avec le rôle de médecin (role === 1)
+      if (this.medecins.length > 0) {
+        this.selectedMedecin = this.medecins[0]; // Sélectionner le premier médecin par défaut
+        this.refreshCalendar();
+      }
     });
 
     this.calendarOptions = {
@@ -101,17 +101,26 @@ export class CalendarComponent implements OnInit {
 
   handleSave() {
     if (!this.validate()) {
+      console.error('Validation failed');
+      return;
+    }
+
+    if (!this.selectedMedecin) {
+      console.error('Aucun médecin sélectionné');
+      // Ajouter une notification à l'utilisateur ici
       return;
     }
 
     const rendezVousToSave = {
-      start: this.changedRendezVous.start,
-      end: this.changedRendezVous.end,
-      title: this.changedRendezVous.patientName, // On utilise patientName comme motifRdv
+      start: this.changedRendezVous.start.toISOString(),
+      end: this.changedRendezVous.end.toISOString(),
+      title: this.changedRendezVous.patientName,
       description: this.changedRendezVous.description,
-      patientId: 0, // À remplacer par l'ID du patient si vous l'avez
-      medecinId: this.selectedMedecin
+      patientId: 0,
+      medecinId: this.selectedMedecin.idUtilisateur
     };
+
+    console.log('Saving rendez-vous:', rendezVousToSave);
 
     if (this.changedRendezVous.id) {
       this.rendezVousService.updateRendezVous(this.changedRendezVous.id, rendezVousToSave)
@@ -120,7 +129,7 @@ export class CalendarComponent implements OnInit {
             this.refreshCalendar();
             this.showDialog = false;
           },
-          error: (error) => console.error('Erreur lors de la mise à jour:', error)
+          error: (error) => console.error('Error updating rendez-vous:', error)
         });
     } else {
       this.rendezVousService.createRendezVous(rendezVousToSave)
@@ -129,29 +138,33 @@ export class CalendarComponent implements OnInit {
             this.refreshCalendar();
             this.showDialog = false;
           },
-          error: (error) => console.error('Erreur lors de la création:', error)
+          error: (error) => console.error('Error creating rendez-vous:', error)
         });
     }
   }
 
   private refreshCalendar() {
     if (this.selectedMedecin) {
-      this.rendezVousService.getRendezVousByMedecin(this.selectedMedecin)
-        .subscribe(events => {
-          console.log('Fetched events for medecin:', events);
-          this.rendezVousList = events;
-          this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList };
-          this.calendarComponent.getApi().refetchEvents(); // Forcer la mise à jour des événements
-          this.cdr.detectChanges(); // Forcer la détection des changements
-        });
-    } else {
-      this.rendezVousService.getRendezVous()
-        .subscribe(events => {
-          console.log('Recherche des évènements:', events);
-          this.rendezVousList = events;
-          this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList };
-          this.calendarComponent.getApi().refetchEvents(); // Forcer la mise à jour des événements
-          this.cdr.detectChanges(); // Forcer la détection des changements
+      const medecinId = Number(this.selectedMedecin.idUtilisateur);
+      console.log('Refreshing calendar for medecin ID:', medecinId);
+
+      this.rendezVousService.getRendezVousByMedecin(medecinId)
+        .subscribe({
+          next: (events) => {
+            console.log('Fetched events:', events);
+            this.rendezVousList = events;
+            this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList };
+            this.calendarComponent.getApi().refetchEvents();
+            this.cdr.detectChanges();
+          },
+          error: (error) => {
+            console.error('Error fetching events:', error);
+            // Gérer l'erreur de manière appropriée
+            this.rendezVousList = [];
+            this.calendarOptions = { ...this.calendarOptions, events: [] };
+            this.calendarComponent.getApi().refetchEvents();
+            this.cdr.detectChanges();
+          }
         });
     }
   }
@@ -168,14 +181,13 @@ export class CalendarComponent implements OnInit {
 
   validate() {
     let { start, end } = this.changedRendezVous;
-    return start && end;
+    return start && end && this.selectedMedecin;
   }
 
   onMedecinChange(event: any) {
     console.log("Médecin sélectionné :", this.selectedMedecin);
-    // Ici, vous pourrez filtrer la liste des rendez-vous en fonction du médecin sélectionné.
-    // Par exemple, si chaque rendez-vous possède une propriété "medecinId" mappée à "id_utilisateur" :
-    // this.calendarOptions = { ...this.calendarOptions, events: this.rendezVousList.filter(rv => rv.medecinId === this.selectedMedecin.id) };
+    console.log("ID du médecin :", this.selectedMedecin?.idUtilisateur);
+    this.refreshCalendar();
   }
 
   disconnect(): void {

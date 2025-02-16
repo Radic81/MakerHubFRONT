@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable, tap} from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface RendezVous {
@@ -36,7 +36,9 @@ export class RendezVousService {
   }
 
   getRendezVousByMedecin(medecinId: number): Observable<any[]> {
+    console.log('Appel API pour le médecin:', medecinId);
     return this.http.get<any[]>(`${this.apiUrl}/utilisateur/${medecinId}`).pipe(
+      tap(data => console.log('Données reçues:', data)),
       map(rdvs => rdvs.map(rdv => ({
         id: rdv.idRendezVous,
         title: rdv.motifRdv || 'Sans titre',
