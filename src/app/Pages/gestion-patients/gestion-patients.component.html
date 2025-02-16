@@ -21,8 +21,8 @@
       <tr>
         <th>#</th>
         <th>Nom complet</th>
-        <th>Email</th>
         <th>Téléphone</th>
+        <th>Numéro d'identité</th>
         <th>Actions</th>
       </tr>
       </thead>
@@ -30,8 +30,8 @@
       <tr *ngFor="let patient of filteredPatients; let i = index">
         <td>{{ i + 1 }}</td>
         <td>{{ patient.prenom }} {{ patient.nom }}</td>
-        <td>{{ patient.email }}</td>
         <td>{{ patient.telephone }}</td>
+        <td>{{ patient.numeroIdentite }}</td>
         <td>
           <button pButton type="button" label="Modifier" icon="pi pi-eye" class="voir-button" (click)="onView(patient)"></button>
         </td>
@@ -52,16 +52,12 @@
         <input id="nom" pInputText type="text" [(ngModel)]="selectedPatient.nom">
       </div>
       <div class="field">
-        <label for="email">Email</label>
-        <input id="email" pInputText type="email" [(ngModel)]="selectedPatient.email">
-      </div>
-      <div class="field">
-        <label for="mot_de_passe">Mot de passe</label>
-        <input id="mot_de_passe" pInputText type="password" [(ngModel)]="selectedPatient.mot_de_passe">
-      </div>
-      <div class="field">
         <label for="telephone">Téléphone</label>
         <input id="telephone" pInputText type="text" [(ngModel)]="selectedPatient.telephone">
+      </div>
+      <div class="field">
+        <label for="numeroIdentite">Numéro d'identité</label>
+        <input id="numeroIdentite" pInputText type="text" [(ngModel)]="selectedPatient.numeroIdentite">
       </div>
     </div>
     <ng-template pTemplate="footer">

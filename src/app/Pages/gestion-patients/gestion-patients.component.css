@@ -101,23 +101,6 @@
   background: #f1f1f1;
 }
 
-/* Bouton Voir dans la table */
-.voir-button {
-  min-width: 80px;
-  background-color: #2e7d32;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.voir-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
 /* Styles spécifiques à la popup (formulaire de création) */
 :host ::ng-deep .p-dialog {
   border-radius: 10px;

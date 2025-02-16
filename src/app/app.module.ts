@@ -24,7 +24,6 @@ import {providePrimeNG} from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 
 
-
 @NgModule({
   declarations: [
     AppComponent,

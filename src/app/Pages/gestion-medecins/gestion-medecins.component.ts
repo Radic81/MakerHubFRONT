@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UtilisateurService, Utilisateur } from '../../services/utilisateur.service';
 
 @Component({
   selector: 'app-gestion-medecins',
@@ -8,88 +9,104 @@ import { Router } from '@angular/router';
   styleUrls: ['./gestion-medecins.component.css']
 })
 export class GestionMedecinsComponent implements OnInit {
-  // Liste complète des médecins (données fictives pour l'instant)
-  medecins: any[] = [];
-  // Liste filtrée (mise à jour lors de la recherche)
-  filteredMedecins: any[] = [];
+  medecins: Utilisateur[] = [];
+  filteredMedecins: Utilisateur[] = [];
   searchTerm: string = '';
 
-  // Gestion de la popup (dialog)
+  // Pour la gestion du formulaire en popup
   displayDialog: boolean = false;
   dialogHeader: string = '';
-  // Objet représentant le médecin sélectionné ou en cours de création/modification
-  selectedMedecin: any = {};
+  selectedMedecin: Utilisateur = {
+    idUtilisateur: 0,
+    motDePasse: '',
+    email: '',
+    role: 2, // par exemple, rôle "médecin"
+    nom: '',
+    prenom: '',
+    telephone: ''
+  };
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private utilisateurService: UtilisateurService) {}
 
   ngOnInit(): void {
-    // Chargement initial des médecins (données fictives)
-    this.medecins = [
-      { id_utilisateur: 1, prenom: 'Alice', nom: 'Dupont', email: 'alice.dupont@hotmail.com', telephone: '0472984559' },
-      { id_utilisateur: 2, prenom: 'Bob', nom: 'Martin', email: 'bob.martin@google.be', telephone: '0484903710' },
-      { id_utilisateur: 3, prenom: 'Charlie', nom: 'Durand', email: 'charlie.durand@yahoo.fr', telephone: '0477472919' },
-      { id_utilisateur: 4, prenom: 'David', nom: 'Lefevre', email: 'david.lefevre@telenet.be', telephone: '0482901749' },
-      { id_utilisateur: 5, prenom: 'Eva', nom: 'Leroy', email: 'eva.leroy@outsiplou.lesbains', telephone: '0472770741' },
-      { id_utilisateur: 6, prenom: 'Fabien', nom: 'Lambert', email: 'fabien.lambert@net.core', telephone: '0484248116' },
-      // Vous pouvez ajouter d'autres exemples ou récupérer les données via un services
-    ];
-    this.filteredMedecins = [...this.medecins];
+    this.loadMedecins();
   }
 
-  // Retour à la page précédente
-  onRetour() {
-    this.router.navigate(['/calendar/admin']);
+  // Charge la liste des médecins depuis l'API
+  loadMedecins(): void {
+    this.utilisateurService.getAll().subscribe({
+      next: (data) => {
+        this.medecins = data;
+        this.filteredMedecins = [...this.medecins];
+      },
+      error: (err) => console.error('Erreur lors de la récupération des médecins :', err)
+    });
   }
 
-  // Filtrage des médecins selon le terme de recherche
-  onSearch() {
+  onSearch(): void {
     const term = this.searchTerm.trim().toLowerCase();
     if (term === '') {
       this.filteredMedecins = [...this.medecins];
     } else {
       this.filteredMedecins = this.medecins.filter(medecin =>
-        (medecin.prenom + ' ' + medecin.nom).toLowerCase().includes(term) ||
+        ((medecin.prenom || '') + ' ' + (medecin.nom || '')).toLowerCase().includes(term) ||
         medecin.email.toLowerCase().includes(term)
       );
     }
   }
 
-  // Ouverture de la popup en mode affichage/modification (au clic sur "Voir")
-  onView(medecin: any) {
+  onView(medecin: Utilisateur): void {
     this.selectedMedecin = { ...medecin };
     this.dialogHeader = 'Détails du médecin';
     this.displayDialog = true;
   }
 
-  // Ouverture de la popup en mode création (au clic sur "Créer")
-  onCreate() {
-    console.log("onCreate déclenché");
-    this.selectedMedecin = { prenom: '', nom: '', email: '', mot_de_passe: '', telephone: '' };
+  onCreate(): void {
+    this.selectedMedecin = {
+      idUtilisateur: 0,
+      motDePasse: '',
+      email: '',
+      role: 2,
+      nom: '',
+      prenom: '',
+      telephone: ''
+    };
     this.dialogHeader = 'Créer un nouveau médecin';
     this.displayDialog = true;
-    console.log("displayDialog =", this.displayDialog);
   }
 
-
-  // Sauvegarde (création ou mise à jour) du médecin
-  onSaveMedecin() {
-    if (this.selectedMedecin.id_utilisateur) {
-      // Modification d'un médecin existant
-      this.medecins = this.medecins.map(m =>
-        m.id_utilisateur === this.selectedMedecin.id_utilisateur ? this.selectedMedecin : m
-      );
+  // Sauvegarde (création ou mise à jour) d'un médecin
+  onSaveMedecin(): void {
+    if (this.selectedMedecin.idUtilisateur && this.selectedMedecin.idUtilisateur !== 0) {
+      // Mise à jour d'un médecin existant
+      this.utilisateurService.update(this.selectedMedecin.idUtilisateur, this.selectedMedecin)
+        .subscribe({
+          next: () => {
+            this.loadMedecins();
+            this.displayDialog = false;
+          },
+          error: (err) => console.error('Erreur lors de la mise à jour du médecin :', err)
+        });
     } else {
-      // Création d'un nouveau médecin (attribution d'un id fictif)
-      this.selectedMedecin.id_utilisateur = Math.floor(Math.random() * 10000);
-      this.medecins.push(this.selectedMedecin);
+      // Création d'un nouveau médecin
+      this.utilisateurService.create(this.selectedMedecin)
+        .subscribe({
+          next: (nouveauMedecin) => {
+            this.medecins.push(nouveauMedecin);
+            this.filteredMedecins = [...this.medecins];
+            this.displayDialog = false;
+          },
+          error: (err) => console.error('Erreur lors de la création du médecin :', err)
+        });
     }
-    // Mise à jour de la liste filtrée et fermeture de la popup
-    this.filteredMedecins = [...this.medecins];
-    this.displayDialog = false;
   }
 
   // Fermeture de la popup
-  onDialogHide() {
+  onDialogHide(): void {
     this.displayDialog = false;
+  }
+
+  onRetour(): void {
+    this.router.navigate(['/calendar/admin']);
   }
 }

@@ -1,43 +1,51 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface RendezVous {
+  id: number;
+  title: string;
+  start: Date;
+  end: Date;
+  description: string;
+  location: string;
+  tag: { color: string, name: string };
+  medecinId: number;
+}
 
 @Injectable({
-  providedIn: 'root'  // Cela permet d'utiliser le services partout dans l'application sans l'ajouter dans les providers manuellement
+  providedIn: 'root'
 })
 export class RendezVousService {
+  private apiUrl = 'http://localhost:5191/api/RendezVous';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   /**
-   * Récupère la liste des rendez-vous.
-   * Pour l'instant, nous retournons des données fictives.
+   * Récupère la liste de tous les rendez-vous
    */
-  getRendezVous(): Observable<any[]> {
-    // Exemple de données fictives (à remplacer par un appel HTTP plus tard)
-    const rendezVousDummy = [
-      {
-        id: 1,
-        title: "Consultation Dr. Dupont",
-        start: new Date("2022-05-11T08:00:00"),
-        end: new Date("2022-05-11T09:00:00"),
-        description: "Consultation générale",
-        location: "Salle 101",
-        tag: { color: "#FF0000", name: "Urgent" },
-        medecinId: 1
-      },
-      {
-        id: 2,
-        title: "Visite Dr. Martin",
-        start: new Date("2022-05-12T10:00:00"),
-        end: new Date("2022-05-12T10:30:00"),
-        description: "Suivi régulier",
-        location: "Salle 102",
-        tag: { color: "#00FF00", name: "Suivi" },
-        medecinId: 2
-      }
-    ];
-    return of(rendezVousDummy);
+  getRendezVous(): Observable<RendezVous[]> {
+    return this.http.get<RendezVous[]>(this.apiUrl);
   }
 
-  // Vous pourrez ajouter ici d'autres méthodes (par exemple, pour créer, modifier ou supprimer un rendez-vous)
+  /**
+   * Récupère la liste des rendez-vous d'un médecin en particulier
+   */
+  getRendezVousByMedecin(medecinId: number): Observable<RendezVous[]> {
+    return this.http.get<RendezVous[]>(`${this.apiUrl}/utilisateur/${medecinId}`);
+  }
+
+  // Méthodes pour créer, mettre à jour ou supprimer un rendez-vous :
+
+  createRendezVous(rdv: RendezVous): Observable<any> {
+    return this.http.post(this.apiUrl, rdv);
+  }
+
+  updateRendezVous(id: number, rdv: RendezVous): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, rdv);
+  }
+
+  deleteRendezVous(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }
