@@ -4,9 +4,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './pages/login/login.component';
-import { GestionMedecinsComponent } from './pages/gestion-medecins/gestion-medecins.component';
-import {CalendarComponent} from './pages/calendar/calendar.component';
+import { LoginComponent } from './Pages/login/login.component';
+import { GestionMedecinsComponent } from './Pages/gestion-medecins/gestion-medecins.component';
+import {CalendarComponent} from './Pages/calendar/calendar.component';
 
 // Importation des modules PrimeNG appropriés
 import { DialogModule } from 'primeng/dialog';
@@ -17,12 +17,13 @@ import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {DropdownModule} from 'primeng/dropdown';
 import {FullCalendarModule} from '@fullcalendar/angular';
 import {Calendar} from 'primeng/calendar';
-import { GestionPatientsComponent } from './pages/gestion-patients/gestion-patients.component';
+import { GestionPatientsComponent } from './Pages/gestion-patients/gestion-patients.component';
 import {Select} from 'primeng/select';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {providePrimeNG} from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 
+import { authInterceptor} from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -49,8 +50,9 @@ import Aura from '@primeng/themes/aura';
     provideAnimations(),
     provideAnimationsAsync(),
     provideHttpClient(
-      withInterceptors([])
+      withInterceptors([authInterceptor])
     ),
+    provideAnimationsAsync(),
     providePrimeNG({
       theme: {
         preset: Aura

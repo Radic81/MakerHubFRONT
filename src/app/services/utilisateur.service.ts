@@ -35,6 +35,7 @@ export class UtilisateurService {
 
   // Crée un nouvel utilisateur
   create(utilisateur: Utilisateur): Observable<Utilisateur> {
+    console.log('Données envoyées à l\'API:', utilisateur); // Ajout du log
     return this.http.post<Utilisateur>(this.apiUrl, utilisateur);
   }
 

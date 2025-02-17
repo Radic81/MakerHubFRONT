@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router'; // Injection d'ActivatedRoute
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -35,21 +36,15 @@ export class CalendarComponent implements OnInit {
     private rendezVousService: RendezVousService,
     private readonly _auth: AuthService,
     private cdr: ChangeDetectorRef,
-    private utilisateurService: UtilisateurService // Injecter le service UtilisateurService
+    private utilisateurService: UtilisateurService,
+    private route: ActivatedRoute  // Injection pour récupérer les paramètres d'URL
   ) { }
 
   ngOnInit(): void {
     this.today = new Date().toISOString().split('T')[0];
+    this.currentUser = this._auth.getTokenData()!;
 
-    // Récupérer les médecins depuis la base de données
-    this.utilisateurService.getAll().subscribe(data => {
-      this.medecins = data.filter(u => u.role === 1); // Filtrer les utilisateurs avec le rôle de médecin (role === 1)
-      if (this.medecins.length > 0) {
-        this.selectedMedecin = this.medecins[0]; // Sélectionner le premier médecin par défaut
-        this.refreshCalendar();
-      }
-    });
-
+    // Configuration de FullCalendar
     this.calendarOptions = {
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
       height: 720,
@@ -67,7 +62,34 @@ export class CalendarComponent implements OnInit {
       select: (e: any) => this.onDateSelect(e)
     };
 
-    this.currentUser = this._auth.getTokenData()!;
+    // Vérifier le rôle de l'utilisateur
+    const role = this.currentUser["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+    if (role === '1') {
+      // Utilisateur médecin : récupération de l'ID depuis l'URL
+      this.route.paramMap.subscribe(params => {
+        const doctorId = params.get('id');
+        if (doctorId) {
+          this.utilisateurService.getById(Number(doctorId)).subscribe({
+            next: (doctor) => {
+              this.selectedMedecin = doctor;
+              this.refreshCalendar();
+            },
+            error: (err) => console.error("Erreur lors de la récupération du médecin :", err)
+          });
+        } else {
+          console.error("Aucun ID de médecin trouvé dans l'URL");
+        }
+      });
+    } else {
+      // Utilisateur admin : récupération de la liste des médecins et affichage du menu déroulant
+      this.utilisateurService.getAll().subscribe(data => {
+        this.medecins = data.filter(u => u.role === 1);
+        if (this.medecins.length > 0) {
+          this.selectedMedecin = this.medecins[0];
+          this.refreshCalendar();
+        }
+      });
+    }
   }
 
   onRendezVousClick(e: any) {
@@ -107,7 +129,6 @@ export class CalendarComponent implements OnInit {
 
     if (!this.selectedMedecin) {
       console.error('Aucun médecin sélectionné');
-      // Ajouter une notification à l'utilisateur ici
       return;
     }
 
@@ -159,7 +180,6 @@ export class CalendarComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error fetching events:', error);
-            // Gérer l'erreur de manière appropriée
             this.rendezVousList = [];
             this.calendarOptions = { ...this.calendarOptions, events: [] };
             this.calendarComponent.getApi().refetchEvents();

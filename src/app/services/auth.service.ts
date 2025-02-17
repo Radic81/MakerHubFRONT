@@ -3,7 +3,7 @@ import {BehaviorSubject, Observable, tap} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {User} from '../models/user.model';
-import {LoginUserForm} from '../models/loginUser.form';
+import {LoginUserForm, LoginResponse} from '../models/loginUser.form';
 import {environment} from '../../environments/environment';
 import {JwtPayload} from '../models/jwtPayload.model';
 import {jwtDecode} from 'jwt-decode';
@@ -12,23 +12,23 @@ import {jwtDecode} from 'jwt-decode';
   providedIn: 'root'
 })
 export class AuthService {
-  public _currentUser$: BehaviorSubject<User | undefined>;
+  public _currentUser$: BehaviorSubject<LoginResponse | undefined>;
 
   constructor(
     private readonly _http: HttpClient,
     private readonly _router: Router
   ) {
     let jsonUser = localStorage.getItem("user")
-    this._currentUser$ = new BehaviorSubject<User | undefined>(
+    this._currentUser$ = new BehaviorSubject<LoginResponse | undefined>(
       jsonUser ? JSON.parse(jsonUser) : undefined
     );
   }
 
-  login(form: LoginUserForm): Observable<User> {
-    return this._http.post<User>(environment.loginUser, form).pipe(
-      tap(user => {
-        this._currentUser$.next(user);
-        localStorage.setItem("user", JSON.stringify(user));
+  login(form: LoginUserForm): Observable<LoginResponse> {
+    return this._http.post<LoginResponse>(environment.loginUser, form).pipe(
+      tap(response => {
+        this._currentUser$.next(response);
+        localStorage.setItem("user", JSON.stringify(response));
       })
     );
   }

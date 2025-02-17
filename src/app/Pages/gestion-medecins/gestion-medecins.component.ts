@@ -20,7 +20,7 @@ export class GestionMedecinsComponent implements OnInit {
     idUtilisateur: 0,
     motDePasse: '',
     email: '',
-    role: 2, // par exemple, rôle "médecin"
+    role: 1,
     nom: '',
     prenom: '',
     telephone: ''
@@ -66,7 +66,7 @@ export class GestionMedecinsComponent implements OnInit {
       idUtilisateur: 0,
       motDePasse: '',
       email: '',
-      role: 2,
+      role: 1,
       nom: '',
       prenom: '',
       telephone: ''
@@ -75,8 +75,18 @@ export class GestionMedecinsComponent implements OnInit {
     this.displayDialog = true;
   }
 
-  // Sauvegarde (création ou mise à jour) d'un médecin
   onSaveMedecin(): void {
+    // Affichage des données à envoyer
+      console.log('Données à envoyer :', {
+        idUtilisateur: this.selectedMedecin.idUtilisateur,
+        motDePasse: this.selectedMedecin.motDePasse,
+        email: this.selectedMedecin.email,
+        role: this.selectedMedecin.role,
+        nom: this.selectedMedecin.nom,
+        prenom: this.selectedMedecin.prenom,
+        telephone: this.selectedMedecin.telephone
+      });
+
     if (this.selectedMedecin.idUtilisateur && this.selectedMedecin.idUtilisateur !== 0) {
       // Mise à jour d'un médecin existant
       this.utilisateurService.update(this.selectedMedecin.idUtilisateur, this.selectedMedecin)
@@ -85,7 +95,10 @@ export class GestionMedecinsComponent implements OnInit {
             this.loadMedecins();
             this.displayDialog = false;
           },
-          error: (err) => console.error('Erreur lors de la mise à jour du médecin :', err)
+          error: (err) => {
+            console.error('Erreur détaillée:', err); // Amélioré le log d'erreur
+            // Optionnel : Afficher un message à l'utilisateur
+          }
         });
     } else {
       // Création d'un nouveau médecin
@@ -96,7 +109,10 @@ export class GestionMedecinsComponent implements OnInit {
             this.filteredMedecins = [...this.medecins];
             this.displayDialog = false;
           },
-          error: (err) => console.error('Erreur lors de la création du médecin :', err)
+          error: (err) => {
+            console.error('Erreur détaillée lors de la création:', err); // Amélioré le log d'erreur
+            // Optionnel : Afficher un message à l'utilisateur
+          }
         });
     }
   }
