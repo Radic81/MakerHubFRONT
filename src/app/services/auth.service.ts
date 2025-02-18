@@ -24,10 +24,15 @@ export class AuthService {
     );
   }
 
+  // Méthode de connexion qui prend un formulaire et retourne une réponse observable
   login(form: LoginUserForm): Observable<LoginResponse> {
+    // Envoi de la requête POST HTTP
     return this._http.post<LoginResponse>(environment.loginUser, form).pipe(
+      // 'tap' permet d'effectuer des actions sans modifier la réponse
       tap(response => {
+        // Met à jour l'état de l'utilisateur courant
         this._currentUser$.next(response);
+        // Sauvegarde dans le stockage local du navigateur
         localStorage.setItem("user", JSON.stringify(response));
       })
     );
@@ -39,8 +44,11 @@ export class AuthService {
     this._router.navigate(["/"])
   }
 
+  // Méthode pour décoder le token JWT
   getTokenData(): JwtPayload | undefined {
+    // Vérifie si un token existe
     if (this._currentUser$.value?.token) {
+      // Décode le token pour obtenir les informations
       return jwtDecode<JwtPayload>(this._currentUser$.value.token);
     }
     return undefined;
